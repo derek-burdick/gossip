@@ -125,7 +125,7 @@ func (uri SipUri) Copy() Uri {
 
 // IsWildcard() always returns 'false' for SIP URIs as they are not equal to the wildcard '*' URI.
 // This method is required since SIP URIs are valid in Contact: headers.
-func (uri *SipUri) IsWildcard() bool {
+func (uri SipUri) IsWildcard() bool {
 	return false
 }
 
@@ -256,23 +256,23 @@ func NewParams() Params {
 }
 
 // Returns the entire parameter map.
-func (p *params) Items() map[string]MaybeString {
+func (p params) Items() map[string]MaybeString {
 	return p.params
 }
 
 // Returns a slice of keys, in order.
-func (p *params) Keys() []string {
+func (p params) Keys() []string {
 	return p.paramOrder
 }
 
 // Returns the requested parameter value.
-func (p *params) Get(k string) (MaybeString, bool) {
+func (p params) Get(k string) (MaybeString, bool) {
 	v, ok := p.params[k]
 	return v, ok
 }
 
 // Add a new parameter.
-func (p *params) Add(k string, v MaybeString) Params {
+func (p params) Add(k string, v MaybeString) Params {
 	// Add param to order list if new.
 	if _, ok := p.params[k]; !ok {
 		p.paramOrder = append(p.paramOrder, k)
@@ -301,7 +301,7 @@ func (p params) Copy() Params {
 
 // Render params to a string.
 // Note that this does not escape special characters, this should already have been done before calling this method.
-func (p *params) ToString(sep uint8) string {
+func (p params) ToString(sep uint8) string {
 	var buffer bytes.Buffer
 	first := true
 
@@ -333,13 +333,13 @@ func (p *params) ToString(sep uint8) string {
 }
 
 // Returns number of params.
-func (p *params) Length() int {
+func (p params) Length() int {
 	return len(p.params)
 }
 
 // Check if two maps of parameters are equal in the sense of having the same keys with the same values.
 // This does not rely on any ordering of the keys of the map in memory.
-func (p *params) Equals(q Params) bool {
+func (p params) Equals(q Params) bool {
 	if p.Length() == 0 && q.Length() == 0 {
 		return true
 	}
