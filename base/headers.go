@@ -105,7 +105,7 @@ type SipUri struct {
 }
 
 // Copy the Sip URI.
-func (uri *SipUri) Copy() Uri {
+func (uri SipUri) Copy() Uri {
 	var port *uint16
 	if uri.Port != nil {
 		temp := *uri.Port
@@ -131,7 +131,7 @@ func (uri *SipUri) IsWildcard() bool {
 
 // Determine if the SIP URI is equal to the specified URI according to the rules laid down in RFC 3261 s. 19.1.4.
 // TODO: The Equals method is not currently RFC-compliant; fix this!
-func (uri *SipUri) Equals(otherUri Uri) bool {
+func (uri SipUri) Equals(otherUri Uri) bool {
 	otherPtr, ok := otherUri.(*SipUri)
 	if !ok {
 		return false
@@ -160,7 +160,7 @@ func (uri *SipUri) Equals(otherUri Uri) bool {
 }
 
 // Generates the string representation of a SipUri struct.
-func (uri *SipUri) String() string {
+func (uri SipUri) String() string {
 	var buffer bytes.Buffer
 
 	// Compulsory protocol identifier.
@@ -286,7 +286,7 @@ func (p *params) Add(k string, v MaybeString) Params {
 }
 
 // Copy a list of params.
-func (p *params) Copy() Params {
+func (p params) Copy() Params {
 	dup := NewParams()
 	for _, k := range p.Keys() {
 		if v, ok := p.Get(k); ok {
@@ -373,17 +373,17 @@ type GenericHeader struct {
 }
 
 // Convert the header to a flat string representation.
-func (header *GenericHeader) String() string {
+func (header GenericHeader) String() string {
 	return header.HeaderName + ": " + header.Contents
 }
 
 // Pull out the header name.
-func (h *GenericHeader) Name() string {
+func (h GenericHeader) Name() string {
 	return h.HeaderName
 }
 
 // Copy the header.
-func (h *GenericHeader) Copy() SipHeader {
+func (h GenericHeader) Copy() SipHeader {
 	return &GenericHeader{h.HeaderName, h.Contents}
 }
 
@@ -397,7 +397,7 @@ type ToHeader struct {
 	Params Params
 }
 
-func (to *ToHeader) String() string {
+func (to ToHeader) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("To: ")
 
@@ -416,10 +416,10 @@ func (to *ToHeader) String() string {
 	return buffer.String()
 }
 
-func (h *ToHeader) Name() string { return "To" }
+func (h ToHeader) Name() string { return "To" }
 
 // Copy the header.
-func (h *ToHeader) Copy() SipHeader {
+func (h ToHeader) Copy() SipHeader {
 	return &ToHeader{h.DisplayName, h.Address.Copy(), h.Params.Copy()}
 }
 
@@ -433,7 +433,7 @@ type FromHeader struct {
 	Params Params
 }
 
-func (from *FromHeader) String() string {
+func (from FromHeader) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("From: ")
 
@@ -451,10 +451,10 @@ func (from *FromHeader) String() string {
 	return buffer.String()
 }
 
-func (h *FromHeader) Name() string { return "From" }
+func (h FromHeader) Name() string { return "From" }
 
 // Copy the header.
-func (h *FromHeader) Copy() SipHeader {
+func (h FromHeader) Copy() SipHeader {
 	return &FromHeader{h.DisplayName, h.Address.Copy(), h.Params.Copy()}
 }
 
@@ -468,7 +468,7 @@ type ContactHeader struct {
 	Params Params
 }
 
-func (contact *ContactHeader) String() string {
+func (contact ContactHeader) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("Contact: ")
 
@@ -493,10 +493,10 @@ func (contact *ContactHeader) String() string {
 	return buffer.String()
 }
 
-func (h *ContactHeader) Name() string { return "Contact" }
+func (h ContactHeader) Name() string { return "Contact" }
 
 // Copy the header.
-func (h *ContactHeader) Copy() SipHeader {
+func (h ContactHeader) Copy() SipHeader {
 	return &ContactHeader{h.DisplayName, h.Address.Copy().(ContactUri), h.Params.Copy()}
 }
 
@@ -506,10 +506,10 @@ func (callId CallId) String() string {
 	return "Call-Id: " + (string)(callId)
 }
 
-func (h *CallId) Name() string { return "Call-Id" }
+func (h CallId) Name() string { return "Call-Id" }
 
-func (h *CallId) Copy() SipHeader {
-	temp := *h
+func (h CallId) Copy() SipHeader {
+	temp := h
 	return &temp
 }
 
@@ -518,13 +518,13 @@ type CSeq struct {
 	MethodName Method
 }
 
-func (cseq *CSeq) String() string {
+func (cseq CSeq) String() string {
 	return fmt.Sprintf("CSeq: %d %s", cseq.SeqNo, cseq.MethodName)
 }
 
-func (h *CSeq) Name() string { return "CSeq" }
+func (h CSeq) Name() string { return "CSeq" }
 
-func (h *CSeq) Copy() SipHeader { return &CSeq{h.SeqNo, h.MethodName} }
+func (h CSeq) Copy() SipHeader { return &CSeq{h.SeqNo, h.MethodName} }
 
 type MaxForwards uint32
 
@@ -565,7 +565,7 @@ type ViaHop struct {
 	Params Params
 }
 
-func (hop *ViaHop) String() string {
+func (hop ViaHop) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("%s/%s/%s %s",
 		hop.ProtocolName, hop.ProtocolVersion,
@@ -584,7 +584,7 @@ func (hop *ViaHop) String() string {
 }
 
 // Return an exact copy of this ViaHop.
-func (hop *ViaHop) Copy() *ViaHop {
+func (hop ViaHop) Copy() *ViaHop {
 	var port *uint16 = nil
 	if hop.Port != nil {
 		temp := *hop.Port
@@ -627,14 +627,14 @@ type RequireHeader struct {
 	Options []string
 }
 
-func (header *RequireHeader) String() string {
+func (header RequireHeader) String() string {
 	return fmt.Sprintf("Require: %s",
 		strings.Join(header.Options, ", "))
 }
 
-func (h *RequireHeader) Name() string { return "Require" }
+func (h RequireHeader) Name() string { return "Require" }
 
-func (h *RequireHeader) Copy() SipHeader {
+func (h RequireHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
 	copy(h.Options, dup)
 	return &RequireHeader{dup}
@@ -644,14 +644,14 @@ type SupportedHeader struct {
 	Options []string
 }
 
-func (header *SupportedHeader) String() string {
+func (header SupportedHeader) String() string {
 	return fmt.Sprintf("Supported: %s",
 		strings.Join(header.Options, ", "))
 }
 
-func (h *SupportedHeader) Name() string { return "Supported" }
+func (h SupportedHeader) Name() string { return "Supported" }
 
-func (h *SupportedHeader) Copy() SipHeader {
+func (h SupportedHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
 	copy(h.Options, dup)
 	return &SupportedHeader{dup}
@@ -661,14 +661,14 @@ type ProxyRequireHeader struct {
 	Options []string
 }
 
-func (header *ProxyRequireHeader) String() string {
+func (header ProxyRequireHeader) String() string {
 	return fmt.Sprintf("Proxy-Require: %s",
 		strings.Join(header.Options, ", "))
 }
 
-func (h *ProxyRequireHeader) Name() string { return "Proxy-Require" }
+func (h ProxyRequireHeader) Name() string { return "Proxy-Require" }
 
-func (h *ProxyRequireHeader) Copy() SipHeader {
+func (h ProxyRequireHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
 	copy(h.Options, dup)
 	return &ProxyRequireHeader{dup}
@@ -680,14 +680,14 @@ type UnsupportedHeader struct {
 	Options []string
 }
 
-func (header *UnsupportedHeader) String() string {
+func (header UnsupportedHeader) String() string {
 	return fmt.Sprintf("Unsupported: %s",
 		strings.Join(header.Options, ", "))
 }
 
-func (h *UnsupportedHeader) Name() string { return "Unsupported" }
+func (h UnsupportedHeader) Name() string { return "Unsupported" }
 
-func (h *UnsupportedHeader) Copy() SipHeader {
+func (h UnsupportedHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
 	copy(h.Options, dup)
 	return &UnsupportedHeader{dup}
