@@ -374,7 +374,9 @@ type GenericHeader struct {
 
 // Convert the header to a flat string representation.
 func (header GenericHeader) String() string {
-	return header.HeaderName + ": " + header.Contents
+	headerName := strings.ToUpper(header.HeaderName[0:1]) + header.HeaderName[1:]
+
+	return headerName + ": " + header.Contents
 }
 
 // Pull out the header name.
@@ -416,7 +418,7 @@ func (to ToHeader) String() string {
 	return buffer.String()
 }
 
-func (h ToHeader) Name() string { return "To" }
+func (h ToHeader) Name() string { return "to" }
 
 // Copy the header.
 func (h ToHeader) Copy() SipHeader {
@@ -451,7 +453,7 @@ func (from FromHeader) String() string {
 	return buffer.String()
 }
 
-func (h FromHeader) Name() string { return "From" }
+func (h FromHeader) Name() string { return "from" }
 
 // Copy the header.
 func (h FromHeader) Copy() SipHeader {
@@ -493,7 +495,7 @@ func (contact ContactHeader) String() string {
 	return buffer.String()
 }
 
-func (h ContactHeader) Name() string { return "Contact" }
+func (h ContactHeader) Name() string { return "contact" }
 
 // Copy the header.
 func (h ContactHeader) Copy() SipHeader {
@@ -506,7 +508,7 @@ func (callId CallId) String() string {
 	return "Call-Id: " + (string)(callId)
 }
 
-func (h CallId) Name() string { return "Call-Id" }
+func (h CallId) Name() string { return "call-id" }
 
 func (h CallId) Copy() SipHeader {
 	temp := h
@@ -522,7 +524,7 @@ func (cseq CSeq) String() string {
 	return fmt.Sprintf("CSeq: %d %s", cseq.SeqNo, cseq.MethodName)
 }
 
-func (h CSeq) Name() string { return "CSeq" }
+func (h CSeq) Name() string { return "cseq" }
 
 func (h CSeq) Copy() SipHeader { return &CSeq{h.SeqNo, h.MethodName} }
 
@@ -532,7 +534,7 @@ func (maxForwards MaxForwards) String() string {
 	return fmt.Sprintf("Max-Forwards: %d", ((int)(maxForwards)))
 }
 
-func (h MaxForwards) Name() string { return "Max-Forwards" }
+func (h MaxForwards) Name() string { return "max-forwards" }
 
 func (h MaxForwards) Copy() SipHeader { return h }
 
@@ -542,7 +544,7 @@ func (contentLength ContentLength) String() string {
 	return fmt.Sprintf("Content-Length: %d", ((int)(contentLength)))
 }
 
-func (h ContentLength) Name() string { return "Content-Length" }
+func (h ContentLength) Name() string { return "content-length" }
 
 func (h ContentLength) Copy() SipHeader { return h }
 
@@ -613,7 +615,7 @@ func (via ViaHeader) String() string {
 	return buffer.String()
 }
 
-func (h ViaHeader) Name() string { return "Via" }
+func (h ViaHeader) Name() string { return "via" }
 
 func (h ViaHeader) Copy() SipHeader {
 	dup := make([]*ViaHop, 0, len(h))
@@ -632,7 +634,7 @@ func (header RequireHeader) String() string {
 		strings.Join(header.Options, ", "))
 }
 
-func (h RequireHeader) Name() string { return "Require" }
+func (h RequireHeader) Name() string { return "require" }
 
 func (h RequireHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
@@ -649,7 +651,7 @@ func (header SupportedHeader) String() string {
 		strings.Join(header.Options, ", "))
 }
 
-func (h SupportedHeader) Name() string { return "Supported" }
+func (h SupportedHeader) Name() string { return "supported" }
 
 func (h SupportedHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
@@ -666,7 +668,7 @@ func (header ProxyRequireHeader) String() string {
 		strings.Join(header.Options, ", "))
 }
 
-func (h ProxyRequireHeader) Name() string { return "Proxy-Require" }
+func (h ProxyRequireHeader) Name() string { return "proxy-require" }
 
 func (h ProxyRequireHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))
@@ -685,7 +687,7 @@ func (header UnsupportedHeader) String() string {
 		strings.Join(header.Options, ", "))
 }
 
-func (h UnsupportedHeader) Name() string { return "Unsupported" }
+func (h UnsupportedHeader) Name() string { return "unsupported" }
 
 func (h UnsupportedHeader) Copy() SipHeader {
 	dup := make([]string, len(h.Options))

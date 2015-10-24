@@ -16,10 +16,10 @@ const c_SOCKET_EXPIRY time.Duration = time.Hour
 
 type Manager struct {
 	notifier
-	transport transport
+	transport Transport
 }
 
-type transport interface {
+type Transport interface {
 	IsStreamed() bool
 	Listen(address string) error
 	Send(addr string, message base.SipMessage) error
@@ -32,7 +32,7 @@ func NewManager(transportType string) (manager *Manager, err error) {
 	var n notifier
 	n.init()
 
-	var transport transport
+	var transport Transport
 	switch strings.ToLower(transportType) {
 	case "udp":
 		transport, err = NewUdp(n.inputs)

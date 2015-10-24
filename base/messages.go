@@ -34,6 +34,7 @@ const (
 	SUBSCRIBE Method = "SUBSCRIBE"
 	NOTIFY    Method = "NOTIFY"
 	REFER     Method = "REFER"
+	PUBLISH   Method = "PUBLISH"
 )
 
 // Internal representation of a SIP message - either a Request or a Response.
